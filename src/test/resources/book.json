@@ -1,0 +1,16 @@
+{
+  "docs": [
+    {
+      "title": "Title 1",
+      "author_name": [
+        "Author 1"
+      ],
+      "publish_date": [
+        "2024"
+      ],
+      "id_amazon": [
+        "id#1"
+      ]
+    }
+  ]
+}
