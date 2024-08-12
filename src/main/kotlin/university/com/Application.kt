@@ -1,12 +1,15 @@
 package university.com
 
-import io.ktor.client.engine.cio.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.util.logging.*
-import university.com.common.HttpClientProvider
-import university.com.plugins.*
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.engine.stop
+import io.ktor.server.netty.Netty
+import io.ktor.util.logging.KtorSimpleLogger
+import university.com.plugins.configureHTTP
+import university.com.plugins.configureRouting
+import university.com.plugins.configureSecurity
+import university.com.plugins.configureSerialization
+import university.com.plugins.jsonModule
 import java.util.concurrent.TimeUnit
 
 fun main() {

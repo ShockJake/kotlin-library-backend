@@ -1,9 +1,9 @@
-package university.com.discord_integration
+package university.com.discordIntegration
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.ktor.util.logging.*
+import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 
 class TokenProvider {
     private val objectMapper = jacksonObjectMapper()

@@ -1,7 +1,8 @@
-package university.com.discord_integration
+package university.com.discordIntegration
 
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
-import io.ktor.util.logging.*
+import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 import kotlinx.coroutines.runBlocking
 import university.com.data.service.BookService
 import java.util.*

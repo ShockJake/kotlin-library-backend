@@ -1,6 +1,6 @@
 package university.com.data.service
 
-import io.ktor.util.logging.*
+import io.ktor.util.logging.KtorSimpleLogger
 import university.com.data.model.Book
 import university.com.data.model.Cart
 

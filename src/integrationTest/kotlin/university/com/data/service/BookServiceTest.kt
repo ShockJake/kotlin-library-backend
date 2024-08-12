@@ -1,10 +1,12 @@
 package university.com.data.service
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
-import io.ktor.client.plugins.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.fullPath
 import kotlinx.coroutines.runBlocking
 import university.com.data.model.Book
 import university.com.data.service.BooksAsserter.assertBookLists
@@ -15,12 +17,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-
 class BookServiceTest {
     private val testCategory = "TEST_CATEGORY"
     private val testEndpoint = "/search.json?subject=$testCategory&limit=10"
     private val objectMapper = jacksonObjectMapper()
-
 
     @Test
     fun shouldGetCategories() {
@@ -176,7 +176,7 @@ class BookServiceTest {
             when (request.url.fullPath) {
                 testEndpoint -> respond(
                     content = responseBody,
-                    status = httpStatus,
+                    status = httpStatus
                 )
 
                 else -> respond(

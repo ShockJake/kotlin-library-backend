@@ -1,14 +1,11 @@
 package university.com.data.service
 
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import university.com.data.model.Book
 import university.com.data.service.DataSupplier.getBook
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-
 
 class CartServiceTest {
     private lateinit var cartService: CartService

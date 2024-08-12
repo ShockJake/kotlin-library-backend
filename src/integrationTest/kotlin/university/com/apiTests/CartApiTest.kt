@@ -2,10 +2,16 @@ package university.com.apiTests
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.testing.testApplication
 import university.com.data.model.Book
 import university.com.plugins.configureRouting
 import university.com.plugins.jsonModule
@@ -127,13 +133,11 @@ class CartApiTest {
         application { configureRouting(); jsonModule() }
         val removeRequestBody = """{ "action": "remove", "book": ${objectMapper.writeValueAsString(book)} }"""
 
-
         // when
         val removeResponse = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
             setBody(removeRequestBody)
         }
-
 
         // then
         assertEquals(HttpStatusCode.BadRequest, removeResponse.status)

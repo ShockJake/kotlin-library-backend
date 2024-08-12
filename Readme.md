@@ -1,6 +1,11 @@
-# Kotlin Library Bot
+# Kotlin Library/Book Shop back-end
 
-Simple Discord Bot for serving data about books.
+Simple Library/Book Shop back-end written in Kotlin.
+
+- Has integration with Discord via Bot.
+- Fetches book data from <https://openlibrary.ord>
+
+## Technologies
 
 - Java 21
 - Kotlin 1.9
@@ -21,3 +26,7 @@ git clone https://github.com/ShockJake/ebiznes-uj.git; cd Kotlin-library-bot
 gradle buildFatJar; java -jar .\build\libs\kotlin-library-bot.jar
 ```
 
+## Linter in Pre-Commit hooks
+
+**Ktlint** can be added to pre-commit hooks via copying contents of `pre-commit`
+to `./.git/hooks/pre-commit`

@@ -1,4 +1,4 @@
-package university.com.discord_integration
+package university.com.discordIntegration
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
@@ -6,9 +6,9 @@ import discord4j.core.`object`.command.ApplicationCommandOption
 import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import discord4j.discordjson.json.ImmutableApplicationCommandRequest
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import university.com.data.service.BookService
 
 class OperationsProvider {
@@ -20,7 +20,6 @@ class OperationsProvider {
             jacksonObjectMapper()
         )
     )
-
 
     private val hello: ImmutableApplicationCommandRequest = builder
         .name("hello")
@@ -42,7 +41,6 @@ class OperationsProvider {
                 .type(ApplicationCommandOption.Type.STRING.value)
                 .required(true).build()
         ).build()
-
 
     val operations: Map<String, Pair<ImmutableApplicationCommandRequest, (ChatInputInteractionEvent) -> Unit>> =
         mapOf(

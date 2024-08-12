@@ -1,14 +1,15 @@
-package university.com.discord_integration
+package university.com.discordIntegration
 
 import discord4j.core.DiscordClient
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent
 import discord4j.core.event.domain.lifecycle.ReadyEvent
-import io.ktor.util.logging.*
+import io.ktor.util.logging.KtorSimpleLogger
+import io.ktor.util.logging.Logger
 
 class LibraryDiscordClient {
     private val logger: Logger = KtorSimpleLogger(LibraryDiscordClient::class.java.simpleName)
     private val tokenProvider: TokenProvider = TokenProvider()
-    private val discordClient: DiscordClient = DiscordClient.builder(tokenProvider.getDiscordToken()).build();
+    private val discordClient: DiscordClient = DiscordClient.builder(tokenProvider.getDiscordToken()).build()
     private val gateway = discordClient.login().block()
     private val operationsService = OperationsService()
 
@@ -30,7 +31,7 @@ class LibraryDiscordClient {
 
     fun logout() {
         logger.info("Stopping the Discord Client")
-        gateway?.logout()?.block();
+        gateway?.logout()?.block()
     }
 
     fun start() {

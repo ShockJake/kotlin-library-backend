@@ -2,11 +2,16 @@ package university.com.apiTests
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.client.engine.mock.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.server.testing.*
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.fullPath
+import io.ktor.server.testing.testApplication
 import university.com.common.HttpClientProvider
 import university.com.data.service.DataSupplier.getBooksAsObjects
 import university.com.data.service.DataSupplier.getCategories
@@ -113,17 +118,17 @@ class BookApiTest {
             when (request.url.fullPath) {
                 testEndpoint -> respond(
                     content = responseBody!!,
-                    status = HttpStatusCode.OK,
+                    status = HttpStatusCode.OK
                 )
 
                 emptyResponseEndpoint -> respond(
                     content = "",
-                    status = HttpStatusCode.OK,
+                    status = HttpStatusCode.OK
                 )
 
                 badResponseEndpoint -> respond(
                     content = "",
-                    status = HttpStatusCode.NotFound,
+                    status = HttpStatusCode.NotFound
                 )
 
                 else -> respond(
@@ -133,5 +138,4 @@ class BookApiTest {
             }
         }
     }
-
 }

@@ -46,7 +46,6 @@ object DataSupplier {
         )
     }
 
-
     fun getBooksAsStrings(): List<String> {
         return getBooksAsObjects().map { "- ${it.title} | ${it.author} | ${it.firstPublishedDate} | [Amazon Link](https://www.amazon.com/dp/${it.amazonBookId})" }
     }
