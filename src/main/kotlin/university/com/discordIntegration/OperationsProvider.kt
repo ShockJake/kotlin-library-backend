@@ -6,19 +6,14 @@ import discord4j.core.`object`.command.ApplicationCommandOption
 import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import discord4j.discordjson.json.ImmutableApplicationCommandRequest
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.HttpTimeout
+import university.com.common.HttpClientProvider
 import university.com.data.service.BookService
 
 class OperationsProvider {
     private val builder = ApplicationCommandRequest.builder()
     private val executor = OperationExecutor(
         listOf("hello", "categories", "get_books_by_category"),
-        BookService(
-            HttpClient(CIO) { install(HttpTimeout) { requestTimeoutMillis = 30000 } },
-            jacksonObjectMapper()
-        )
+        BookService(HttpClientProvider.getClient(), jacksonObjectMapper())
     )
 
     private val hello: ImmutableApplicationCommandRequest = builder

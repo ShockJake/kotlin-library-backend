@@ -11,7 +11,7 @@ class OperationsService {
     private val logger = KtorSimpleLogger(OperationsProvider::class.java.simpleName)
     private val operations = OperationsProvider().operations
 
-    fun registerOperations(guildIds: MutableList<Long>?, applicationId: Long, gateway: GatewayDiscordClient?) {
+    fun registerOperations(guildIds: List<Long>?, applicationId: Long, gateway: GatewayDiscordClient?) {
         logger.info("Registering operations for application $applicationId")
         val applicationService = gateway!!.restClient.applicationService
         guildIds?.forEach { guildId ->

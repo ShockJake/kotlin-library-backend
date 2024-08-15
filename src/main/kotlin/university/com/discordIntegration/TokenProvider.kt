@@ -8,7 +8,7 @@ import io.ktor.util.logging.Logger
 class TokenProvider {
     private val objectMapper = jacksonObjectMapper()
     private val tokens: MutableMap<String, String> = HashMap()
-    private val discordToken: String = "discord_token"
+    private val discordTokenPropertyName: String = "discord_token"
     private val logger: Logger = KtorSimpleLogger(TokenProvider::class.java.simpleName)
 
     init {
@@ -17,7 +17,7 @@ class TokenProvider {
             val tokenData = this.javaClass.classLoader.getResource("tokens.json")?.readText()
             logger.debug("Token data: {}", tokenData)
             val node: JsonNode = objectMapper.readTree(tokenData)
-            tokens[discordToken] = node.get(discordToken).textValue()
+            tokens[discordTokenPropertyName] = node.get(discordTokenPropertyName).textValue()
         } catch (e: Exception) {
             logger.error(e.message)
             throw e
@@ -25,6 +25,6 @@ class TokenProvider {
     }
 
     fun getDiscordToken(): String {
-        return tokens[discordToken] ?: ""
+        return tokens[discordTokenPropertyName] ?: ""
     }
 }

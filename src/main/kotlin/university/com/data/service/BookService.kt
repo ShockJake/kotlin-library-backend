@@ -10,8 +10,8 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import university.com.common.DispatcherProvider
 import university.com.data.model.Book
 import java.net.URLEncoder
 
@@ -69,7 +69,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
     }
 
     private suspend fun doGetRequest(category: String): HttpResponse {
-        val encodedCategory = withContext(Dispatchers.IO) {
+        val encodedCategory = withContext(DispatcherProvider.getIO()) {
             URLEncoder.encode(category, "UTF-8")
         }
         val url = "https://openlibrary.org/search.json?subject=$encodedCategory&limit=10"
@@ -79,7 +79,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
 
     private fun getSearchResult(responseBody: String): JsonNode {
         try {
-            return objectMapper.readTree(responseBody).get("docs")
+            return objectMapper.readTree(responseBody)["docs"]
         } catch (e: Exception) {
             logger.error("Cannot get search result from response: ${e.message}")
             throw Exception("Cannot get search result from response")
@@ -105,7 +105,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
 
     private fun parseJsonElement(input: JsonNode, target: String): String {
         try {
-            return input.get(target).asText()
+            return input[target].asText()
         } catch (e: Exception) {
             throw Exception("Cannot parse $target: ${e.message}")
         }
@@ -113,7 +113,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
 
     private fun parseJsonElement(input: JsonNode, target: String, index: Int): String {
         try {
-            return input.get(target).get(0).asText()
+            return input[target][0].asText()
         } catch (e: Exception) {
             logger.error("Cannot parse $target: ${e.message}")
             throw Exception("Cannot parse $target with index '$index': ${e.message}")

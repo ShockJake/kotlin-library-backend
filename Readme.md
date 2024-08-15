@@ -3,7 +3,7 @@
 Simple Library/Book Shop back-end written in Kotlin.
 
 - Has integration with Discord via Bot.
-- Fetches book data from <https://openlibrary.ord>
+- Fetches book data from <https://openlibrary.org>
 
 ## Technologies
 

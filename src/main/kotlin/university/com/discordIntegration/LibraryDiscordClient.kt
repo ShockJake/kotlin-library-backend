@@ -25,7 +25,7 @@ class LibraryDiscordClient {
                 logger.info("Logged as a ${event.self.username}")
             }
         } else {
-            throw IllegalStateException("Error while logging in")
+            error("Error while logging in")
         }
     }
 
