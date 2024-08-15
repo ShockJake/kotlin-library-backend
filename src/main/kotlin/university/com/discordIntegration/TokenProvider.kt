@@ -17,7 +17,7 @@ class TokenProvider {
             val tokenData = this.javaClass.classLoader.getResource("tokens.json")?.readText()
             logger.debug("Token data: {}", tokenData)
             val node: JsonNode = objectMapper.readTree(tokenData)
-            tokens[discordTokenPropertyName] = node.get(discordTokenPropertyName).textValue()
+            tokens[discordTokenPropertyName] = node[discordTokenPropertyName].textValue()
         } catch (e: Exception) {
             logger.error(e.message)
             throw e
