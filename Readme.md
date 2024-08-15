@@ -20,14 +20,14 @@ Simple Library/Book Shop back-end written in Kotlin.
 - Clone repository:
 
 ```bash
-git clone https://github.com/ShockJake/ebiznes-uj.git; cd Kotlin-library-bot
+git clone https://github.com/ShockJake/kotlin-library-backend.git; cd kotlin-library-backend
 ```
 
 - Set your discord token in tokens.json
 - Build and run the jar
 
 ```bash
-gradle buildFatJar; java -jar .\build\libs\kotlin-library-bot.jar
+gradle buildFatJar; java -jar .\build\libs\kotlin-library.jar
 ```
 
 ## Linter in Pre-Commit hooks
