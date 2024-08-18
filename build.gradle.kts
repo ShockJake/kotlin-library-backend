@@ -10,6 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     id("org.sonarqube") version "4.4.1.3373"
+    jacoco
 }
 
 sonar {
@@ -95,6 +96,16 @@ tasks.register<Test>("integrationTest") {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.named("integrationTest"))
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test, tasks.named("integrationTest"))
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 ktlint {
