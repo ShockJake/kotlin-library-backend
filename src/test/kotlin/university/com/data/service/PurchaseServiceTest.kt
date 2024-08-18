@@ -8,6 +8,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class PurchaseServiceTest {
+    private val userId = "USER_ID"
+
     private lateinit var service: PurchaseService
 
     @BeforeTest
@@ -21,7 +23,7 @@ class PurchaseServiceTest {
         val expected = mutableListOf<Purchase>()
 
         // when
-        val actual = service.getPurchases()
+        val actual = service.getPurchases(userId)
 
         // then
         assertEquals(expected, actual)
@@ -33,8 +35,8 @@ class PurchaseServiceTest {
         val testBooks = mutableListOf(getBook())
 
         // when
-        service.addPurchase(testBooks)
-        val purchases = service.getPurchases()
+        service.addPurchase(userId, testBooks)
+        val purchases = service.getPurchases(userId)
 
         // then
         assertEquals(testBooks, purchases.first().books)
@@ -47,10 +49,10 @@ class PurchaseServiceTest {
         val testBooks = mutableListOf(getBook())
 
         // when
-        service.addPurchase(testBooks)
-        service.addPurchase(testBooks)
-        service.addPurchase(testBooks)
-        val purchases = service.getPurchases()
+        service.addPurchase(userId, testBooks)
+        service.addPurchase(userId, testBooks)
+        service.addPurchase(userId, testBooks)
+        val purchases = service.getPurchases(userId)
 
         // then
         assertEquals(expectedSize, purchases.size)

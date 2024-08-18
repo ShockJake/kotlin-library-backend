@@ -2,41 +2,40 @@ package university.com.apiTests
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.fullPath
 import io.ktor.server.testing.testApplication
-import university.com.common.HttpClientProvider
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInstance
+import university.com.apiTests.ApiTestCommons.TEST_CATEGORY
+import university.com.apiTests.ApiTestCommons.setMockEngine
 import university.com.data.service.DataSupplier.getBooksAsObjects
 import university.com.data.service.DataSupplier.getCategories
 import university.com.plugins.configureRouting
-import university.com.plugins.jsonModule
+import university.com.plugins.configureSecurity
+import university.com.plugins.configureSerialization
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BookApiTest {
-    private val testCategory = "TEST_CATEGORY"
-    private val testEndpoint = "/search.json?subject=$testCategory&limit=10"
-    private val emptyResponseEndpoint = "/search.json?subject=EMPTY&limit=10"
-    private val badResponseEndpoint = "/search.json?subject=BAD&limit=10"
+
     private val objectMapper = jacksonObjectMapper()
+
+    @BeforeAll
+    fun beforeAll() {
+        setMockEngine()
+    }
 
     @Test
     fun shouldGetCategories() = testApplication {
         // given
-        application {
-            HttpClientProvider.setUseMock(true)
-            HttpClientProvider.setMockEngine(getMockEngine())
-            configureRouting()
-            jsonModule()
-        }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.get("/categories") {
@@ -55,15 +54,10 @@ class BookApiTest {
     fun shouldGetBooksDataByCategory() = testApplication {
         // given
         val expectedResponse = objectMapper.writeValueAsString(getBooksAsObjects())
-        application {
-            HttpClientProvider.setUseMock(true)
-            HttpClientProvider.setMockEngine(getMockEngine())
-            configureRouting()
-            jsonModule()
-        }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
-        val response = client.get("/books/$testCategory") {
+        val response = client.get("/books/$TEST_CATEGORY") {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
 
@@ -75,12 +69,7 @@ class BookApiTest {
     @Test
     fun shouldRespondWithBadResponseIfNoFetchResponseGot() = testApplication {
         // given
-        application {
-            HttpClientProvider.setUseMock(true)
-            HttpClientProvider.setMockEngine(getMockEngine())
-            configureRouting()
-            jsonModule()
-        }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.get("/books/EMPTY") {
@@ -95,12 +84,7 @@ class BookApiTest {
     @Test
     fun shouldRespondWithBadResponseIfBadFetchResponseGot() = testApplication {
         // given
-        application {
-            HttpClientProvider.setUseMock(true)
-            HttpClientProvider.setMockEngine(getMockEngine())
-            configureRouting()
-            jsonModule()
-        }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.get("/books/BAD") {
@@ -110,32 +94,5 @@ class BookApiTest {
         // then
         assertEquals(HttpStatusCode.BadRequest, response.status)
         assertEquals("Cannot fetch the data, response code - 404", response.bodyAsText())
-    }
-
-    private fun getMockEngine(): MockEngine {
-        val responseBody = this.javaClass.classLoader.getResource("books.json")?.readText()
-        return MockEngine { request ->
-            when (request.url.fullPath) {
-                testEndpoint -> respond(
-                    content = responseBody!!,
-                    status = HttpStatusCode.OK
-                )
-
-                emptyResponseEndpoint -> respond(
-                    content = "",
-                    status = HttpStatusCode.OK
-                )
-
-                badResponseEndpoint -> respond(
-                    content = "",
-                    status = HttpStatusCode.NotFound
-                )
-
-                else -> respond(
-                    content = """{"error": "Not Found"} """,
-                    status = HttpStatusCode.NotFound
-                )
-            }
-        }
     }
 }

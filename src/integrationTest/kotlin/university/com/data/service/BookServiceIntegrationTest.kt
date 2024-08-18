@@ -8,6 +8,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.TestInstance
 import university.com.data.model.Book
 import university.com.data.service.BooksAsserter.assertBookLists
 import university.com.data.service.DataSupplier.getBooksAsObjects
@@ -17,7 +18,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class BookServiceTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class BookServiceIntegrationTest {
     private val testCategory = "TEST_CATEGORY"
     private val testEndpoint = "/search.json?subject=$testCategory&limit=10"
     private val objectMapper = jacksonObjectMapper()

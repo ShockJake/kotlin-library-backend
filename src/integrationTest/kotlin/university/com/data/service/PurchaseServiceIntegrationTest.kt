@@ -1,5 +1,6 @@
 package university.com.data.service
 
+import org.junit.jupiter.api.TestInstance
 import university.com.data.model.Purchase
 import university.com.data.service.BooksAsserter.assertBookLists
 import university.com.data.service.DataSupplier.getBook
@@ -9,7 +10,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class PurchaseServiceTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class PurchaseServiceIntegrationTest {
+    private val userId = "USER_ID"
+
     private lateinit var service: PurchaseService
 
     @BeforeTest
@@ -23,7 +27,7 @@ class PurchaseServiceTest {
         val expected = mutableListOf<Purchase>()
 
         // when
-        val actual = service.getPurchases()
+        val actual = service.getPurchases(userId)
 
         // then
         assertEquals(expected, actual)
@@ -35,8 +39,8 @@ class PurchaseServiceTest {
         val testBooks = getBooksAsObjects()
 
         // when
-        service.addPurchase(testBooks)
-        val purchases = service.getPurchases()
+        service.addPurchase(userId, testBooks)
+        val purchases = service.getPurchases(userId)
 
         // then
         val purchasedBooks = purchases.first().books
@@ -50,10 +54,10 @@ class PurchaseServiceTest {
         val testBooks = mutableListOf(getBook())
 
         // when
-        service.addPurchase(testBooks)
-        service.addPurchase(testBooks)
-        service.addPurchase(testBooks)
-        val purchases = service.getPurchases()
+        service.addPurchase(userId, testBooks)
+        service.addPurchase(userId, testBooks)
+        service.addPurchase(userId, testBooks)
+        val purchases = service.getPurchases(userId)
 
         // then
         assertEquals(expectedSize, purchases.size)

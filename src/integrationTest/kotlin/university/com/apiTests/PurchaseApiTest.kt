@@ -11,26 +11,48 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInstance
+import university.com.apiTests.ApiTestCommons.authenticateUser
+import university.com.apiTests.ApiTestCommons.setMockEngine
 import university.com.data.model.Book
 import university.com.data.model.Purchase
 import university.com.plugins.configureRouting
-import university.com.plugins.jsonModule
+import university.com.plugins.configureSecurity
+import university.com.plugins.configureSerialization
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PurchaseApiTest {
     private val objectMapper = jacksonObjectMapper()
+    private var token = ""
+
+    @BeforeAll
+    fun beforeAll() = testApplication {
+        setMockEngine()
+        application { configureSecurity(); configureRouting(); configureSerialization() }
+        token = authenticateUser(client)
+    }
+
+    @AfterAll
+    fun afterAll() {
+        ApiTestCommons.cleanup()
+    }
 
     @Test
     fun shouldGetEmptyPurchases() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
+
         val expectedResult = listOf<Purchase>()
 
         // when
         val response = client.get("/purchase") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
         }
 
         // then
@@ -44,16 +66,18 @@ class PurchaseApiTest {
     @Test
     fun shouldAddPurchase() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
         val books = listOf(Book("TITLE", "AUTHOR", "DATE", "ID"))
 
         // when
         val addResponse = client.post("/purchase") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody(objectMapper.writeValueAsString(books))
         }
         val getResponse = client.get("/purchase") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
         }
 
         // then
@@ -69,11 +93,12 @@ class PurchaseApiTest {
     @Test
     fun shouldRespondWithBadRequestIfEmptyDataProvided() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.post("/purchase") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("")
         }
 
@@ -84,11 +109,12 @@ class PurchaseApiTest {
     @Test
     fun shouldRespondWithBadRequestIfNotJsonProvided() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.post("/purchase") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("<tag>SomeXML<tag>")
         }
 

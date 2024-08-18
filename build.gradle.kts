@@ -41,8 +41,9 @@ configurations {
 }
 
 dependencies {
+    implementation("at.favre.lib:bcrypt:0.10.2")
     implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-auth-jvm")
+    implementation("io.ktor:ktor-server-auth-jwt")
     implementation("io.ktor:ktor-client-core-jvm")
     implementation("io.ktor:ktor-client-apache-jvm")
     implementation("io.ktor:ktor-server-resources")
@@ -59,7 +60,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.5.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
     testImplementation("io.ktor:ktor-server-tests-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
     testImplementation("io.ktor:ktor-client-mock")
 }
 
@@ -72,18 +73,15 @@ sourceSets {
     }
 }
 
-tasks {
-    val integrationTest by registering(Test::class) {
-        description = "Runs the integration tests."
-        group = "verification"
-        testClassesDirs = sourceSets["integrationTest"].output.classesDirs
-        classpath = sourceSets["integrationTest"].runtimeClasspath
-        shouldRunAfter("test")
-    }
+tasks.register<Test>("integrationTest") {
+    description = "Runs the integration tests."
+    group = "verification"
 
-    check {
-        dependsOn(integrationTest)
-    }
+    testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+    classpath = sourceSets["integrationTest"].runtimeClasspath
+
+    shouldRunAfter("test")
+    useJUnitPlatform()
 }
 
 ktlint {

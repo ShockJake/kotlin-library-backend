@@ -12,17 +12,37 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.TestInstance
+import university.com.apiTests.ApiTestCommons.authenticateUser
+import university.com.apiTests.ApiTestCommons.setMockEngine
 import university.com.data.model.Book
 import university.com.plugins.configureRouting
-import university.com.plugins.jsonModule
+import university.com.plugins.configureSecurity
+import university.com.plugins.configureSerialization
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CartApiTest {
     private val objectMapper = jacksonObjectMapper()
+    private var token = ""
     private val book = Book("TITLE", "AUTHOR", "DATE", "ID")
+
+    @BeforeAll
+    fun beforeAll() = testApplication {
+        setMockEngine()
+        application { configureSecurity(); configureRouting(); configureSerialization() }
+        token = authenticateUser(client)
+    }
+
+    @AfterAll
+    fun afterAll() {
+        ApiTestCommons.cleanup()
+    }
 
     @BeforeTest
     fun setUp() {
@@ -32,7 +52,7 @@ class CartApiTest {
     @Test
     fun shouldUpdateCart() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
         val expectedResult = listOf(book)
 
         // when & then
@@ -43,11 +63,13 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfEmptyDataProvided() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("")
         }
 
@@ -58,11 +80,13 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfInvalidActionProvided() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("""{"action": "TEST_ACTION"}""")
         }
 
@@ -73,11 +97,13 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfIncompleteDataProvided() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("""{"action": "add"}""")
         }
 
@@ -88,11 +114,13 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfProvidedBookDataIsIncomplete() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val response = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody("""{"action": "add", "book": {}}""")
         }
 
@@ -103,7 +131,7 @@ class CartApiTest {
     @Test
     fun shouldAddAndRemoveTheBookFromCart() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
         val removeRequestBody = """{ "action": "remove", "book": ${objectMapper.writeValueAsString(book)} }"""
         val expectedResult = listOf<Book>()
 
@@ -111,10 +139,14 @@ class CartApiTest {
         addBookToCart(book)
         val removeResponse = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody(removeRequestBody)
         }
         val getResponse = client.get("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
         }
 
         // then
@@ -130,12 +162,14 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfThereAreNoBooksToRemove() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
         val removeRequestBody = """{ "action": "remove", "book": ${objectMapper.writeValueAsString(book)} }"""
 
         // when
         val removeResponse = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody(removeRequestBody)
         }
 
@@ -146,11 +180,13 @@ class CartApiTest {
     @Test
     fun shouldCheckoutCart() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         addBookToCart(book)
         val checkoutResponse = client.get("/cart/checkout") {
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             header(HttpHeaders.Accept, ContentType.Application.Json)
         }
 
@@ -161,10 +197,12 @@ class CartApiTest {
     @Test
     fun shouldRespondWithBadRequestIfNoBooksAreInCart() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val checkoutResponse = client.get("/cart/checkout") {
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             header(HttpHeaders.Accept, ContentType.Application.Json)
         }
 
@@ -174,10 +212,12 @@ class CartApiTest {
 
     private fun cleanCart() = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val cleanResponse = client.delete("/cart") {
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             header(HttpHeaders.Accept, ContentType.Application.Json)
         }
 
@@ -187,12 +227,14 @@ class CartApiTest {
 
     private fun addBookToCart(book: Book) = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
         val addRequestBody = """{ "action": "add", "book": ${objectMapper.writeValueAsString(book)} }"""
 
         // when
         val addResponse = client.put("/cart") {
             header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             setBody(addRequestBody)
         }
 
@@ -202,10 +244,12 @@ class CartApiTest {
 
     private fun getCartContents(expectedResult: List<Book>) = testApplication {
         // given
-        application { configureRouting(); jsonModule() }
+        application { configureSecurity(); configureRouting(); configureSerialization() }
 
         // when
         val getResponse = client.get("/cart") {
+            header(HttpHeaders.Accept, ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $token")
             header(HttpHeaders.Accept, ContentType.Application.Json)
         }
 

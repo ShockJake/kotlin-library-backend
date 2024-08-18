@@ -6,16 +6,20 @@ import java.math.BigInteger
 import java.security.SecureRandom
 
 class PurchaseService {
-    private val purchases: MutableList<Purchase> = mutableListOf()
+    private val purchases: MutableMap<String, MutableList<Purchase>> = mutableMapOf()
     private val random = SecureRandom()
 
-    fun getPurchases(): List<Purchase> {
-        return purchases
+    fun getPurchases(userId: String): List<Purchase> {
+        return purchases.getOrElse(userId) { emptyList() }
     }
 
-    fun addPurchase(books: List<Book>) {
-        val id = generateId()
-        purchases.add(Purchase(id, books))
+    fun addPurchase(userId: String, books: List<Book>) {
+        val purchaseId = generateId()
+        if (purchases.containsKey(userId)) {
+            purchases[userId]?.add(Purchase(purchaseId, books))
+        } else {
+            purchases[userId] = mutableListOf(Purchase(purchaseId, books))
+        }
     }
 
     private fun generateId(): String {
