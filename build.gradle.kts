@@ -9,6 +9,15 @@ plugins {
     id("io.ktor.plugin") version "2.3.10"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+    id("org.sonarqube") version "4.4.1.3373"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "ShockJake_kotlin-library-backend")
+        property("sonar.organization", "shockjake")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 group = "university.com"
