@@ -17,7 +17,9 @@ import university.com.data.service.DataSupplier.getCategories
 import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import org.junit.jupiter.api.TestInstance
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OperationExecutorTest {
     private val operationNames = listOf("hello", "categories", "get_books_by_category")
     private lateinit var bookService: BookService

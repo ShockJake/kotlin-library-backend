@@ -8,7 +8,9 @@ import university.com.plugins.configureRouting
 import university.com.plugins.configureSecurity
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.junit.jupiter.api.TestInstance
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApplicationTest {
     @Test
     fun testRoot() = testApplication {

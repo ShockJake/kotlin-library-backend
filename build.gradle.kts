@@ -93,6 +93,10 @@ tasks.register<Test>("integrationTest") {
     useJUnitPlatform()
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 ktlint {
     verbose.set(true)
     outputToConsole.set(true)

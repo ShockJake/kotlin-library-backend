@@ -16,7 +16,9 @@ import university.com.data.service.DataSupplier.getCategories
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.junit.jupiter.api.TestInstance
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BookServiceTest {
     private val testCategory = "TEST_CATEGORY"
     private val testEndpoint = "/search.json?subject=$testCategory&limit=10"
