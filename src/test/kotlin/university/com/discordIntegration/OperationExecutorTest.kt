@@ -7,6 +7,7 @@ import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono
 import discord4j.core.spec.InteractionCallbackSpecDeferReplyMono
 import discord4j.core.spec.InteractionReplyEditMono
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.TestInstance
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -17,7 +18,6 @@ import university.com.data.service.DataSupplier.getCategories
 import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OperationExecutorTest {

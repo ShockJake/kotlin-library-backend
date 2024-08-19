@@ -1,5 +1,8 @@
 package university.com.data.service
 
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import university.com.data.model.Book
@@ -8,7 +11,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CartServiceTest {
@@ -21,12 +23,31 @@ class CartServiceTest {
     fun setUp() {
         purchaseService = mock()
         cartService = CartService(purchaseService)
+    }
+
+    @Test
+    fun shouldCreateCartForUserId() {
+        // when & then
+        assertDoesNotThrow {
+            cartService.createCart(userId)
+        }
+    }
+
+    @Test
+    fun shouldThrowExceptionIfCartIsAlreadyExist() {
+        // given
         cartService.createCart(userId)
+
+        // when & then
+        assertThrows<IllegalStateException> {
+            cartService.createCart(userId)
+        }
     }
 
     @Test
     fun shouldGetEmptyCart() {
         // given
+        cartService.createCart(userId)
         val expectedContents = listOf<Book>()
 
         // when
@@ -37,8 +58,17 @@ class CartServiceTest {
     }
 
     @Test
+    fun shouldThrowExceptionIfGettingCartThatDoesNotExist() {
+        // when & then
+        assertThrows<IllegalStateException> {
+            cartService.getContents(userId)
+        }
+    }
+
+    @Test
     fun shouldAddBookToCart() {
         // given
+        cartService.createCart(userId)
         val testBook = getBook()
         val expectedContents = listOf(testBook)
 
@@ -51,8 +81,17 @@ class CartServiceTest {
     }
 
     @Test
+    fun shouldThrowExceptionIfAddingBookToCartThatDoesNotExist() {
+        // when & then
+        assertThrows<IllegalStateException> {
+            cartService.addBook(userId, getBook())
+        }
+    }
+
+    @Test
     fun shouldRemoveBookFromCart() {
         // given
+        cartService.createCart(userId)
         val testBook = getBook()
         val expectedContents = listOf<Book>()
 
@@ -66,8 +105,17 @@ class CartServiceTest {
     }
 
     @Test
+    fun shouldThrowExceptionIfRemovingBookFromCartThatDoesNotExist() {
+        // when & then
+        assertThrows<IllegalStateException> {
+            cartService.removeBook(userId, getBook())
+        }
+    }
+
+    @Test
     fun shouldThrowExceptionWhenRemovingNonExistentBookFromCart() {
         // given
+        cartService.createCart(userId)
         val testBook = getBook()
 
         // when & then
@@ -79,6 +127,7 @@ class CartServiceTest {
     @Test
     fun shouldClearCart() {
         // given
+        cartService.createCart(userId)
         val testBook = getBook()
         val expectedContents = listOf<Book>()
 
@@ -95,6 +144,7 @@ class CartServiceTest {
     @Test
     fun shouldCheckoutCart() {
         // given
+        cartService.createCart(userId)
         val testBook = getBook()
         val expectedContents = listOf<Book>()
         val purchaseContents = listOf(testBook)
@@ -111,8 +161,18 @@ class CartServiceTest {
 
     @Test
     fun shouldThrowExceptionWhenEmptyCartCheckout() {
+        cartService.createCart(userId)
+
         // when & then
         assertFailsWith<Exception> {
+            cartService.checkout(userId)
+        }
+    }
+
+    @Test
+    fun shouldThrowExceptionWhenCheckoutCartThatDoesNotExist() {
+        // when & then
+        assertThrows<IllegalStateException> {
             cartService.checkout(userId)
         }
     }

@@ -7,13 +7,20 @@ import io.ktor.server.testing.testApplication
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import university.com.api.ApiTestCommons.setMockEngine
 import university.com.plugins.configureRouting
 import university.com.plugins.configureSecurity
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApplicationTest {
+    @BeforeTest
+    fun setUp() {
+        setMockEngine()
+    }
+
     @Test
     fun testRoot() = testApplication {
         application {
@@ -23,6 +30,14 @@ class ApplicationTest {
         client.get("/").apply {
             assertEquals(HttpStatusCode.OK, status)
             assertEquals("Hello World!", bodyAsText())
+        }
+    }
+
+    @Test
+    fun shouldRunSetup() = testApplication {
+        // when & then
+        assertDoesNotThrow {
+            setup()
         }
     }
 

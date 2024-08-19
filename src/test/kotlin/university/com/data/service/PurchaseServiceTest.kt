@@ -1,12 +1,12 @@
 package university.com.data.service
 
+import org.junit.jupiter.api.TestInstance
 import university.com.data.model.Purchase
 import university.com.data.service.DataSupplier.getBook
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PurchaseServiceTest {

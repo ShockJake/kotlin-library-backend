@@ -1,11 +1,11 @@
 package university.com.discordIntegration
 
+import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.mock
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OperationsProviderTest {

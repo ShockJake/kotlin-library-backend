@@ -1,8 +1,8 @@
 package university.com.discordIntegration
 
+import org.junit.jupiter.api.TestInstance
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TokenProviderTest {

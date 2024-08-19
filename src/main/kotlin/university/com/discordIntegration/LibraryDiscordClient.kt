@@ -6,12 +6,9 @@ import discord4j.core.event.domain.lifecycle.ReadyEvent
 import io.ktor.util.logging.KtorSimpleLogger
 import io.ktor.util.logging.Logger
 
-class LibraryDiscordClient {
+class LibraryDiscordClient(discordClient: DiscordClient, operationsService: OperationsService) {
     private val logger: Logger = KtorSimpleLogger(LibraryDiscordClient::class.java.simpleName)
-    private val tokenProvider: TokenProvider = TokenProvider()
-    private val discordClient: DiscordClient = DiscordClient.builder(tokenProvider.getDiscordToken()).build()
     private val gateway = discordClient.login().block()
-    private val operationsService = OperationsService()
 
     init {
         val guilds = gateway?.guilds?.map { it.id.asLong() }?.collectList()?.block()
