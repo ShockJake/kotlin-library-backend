@@ -3,6 +3,10 @@ import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 val ktorVersion: String by project
 val kotlinVersion: String by project
 val logbackVersion: String by project
+val bcryptVersion = "0.10.2"
+val discord4JVersion = "3.2.6"
+val mockitoVersion = "5.5.0"
+val kotlinMockitoVersion = "5.0.0"
 
 plugins {
     kotlin("jvm") version "1.9.23"
@@ -51,7 +55,7 @@ configurations {
 }
 
 dependencies {
-    implementation("at.favre.lib:bcrypt:0.10.2")
+    implementation("at.favre.lib:bcrypt:$bcryptVersion")
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-auth-jwt")
     implementation("io.ktor:ktor-client-core-jvm")
@@ -63,12 +67,12 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("com.discord4j:discord4j-core:3.2.6")
-    implementation("io.ktor:ktor-client-cio-jvm:2.3.10")
+    implementation("com.discord4j:discord4j-core:$discord4JVersion")
+    implementation("io.ktor:ktor-client-cio-jvm")
     implementation("io.ktor:ktor-client-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
-    testImplementation("org.mockito:mockito-core:5.5.0")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:$kotlinMockitoVersion")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion")
     testImplementation("io.ktor:ktor-client-mock")

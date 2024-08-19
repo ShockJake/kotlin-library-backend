@@ -107,6 +107,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
         try {
             return input[target].asText()
         } catch (e: Exception) {
+            logger.error("Cannot parse $target: ${e.message}")
             throw Exception("Cannot parse $target: ${e.message}")
         }
     }
@@ -115,7 +116,7 @@ class BookService(private val client: HttpClient, private val objectMapper: Obje
         try {
             return input[target][0].asText()
         } catch (e: Exception) {
-            logger.error("Cannot parse $target: ${e.message}")
+            logger.error("Cannot parse $target: ${e.message} at index $index")
             throw Exception("Cannot parse $target with index '$index': ${e.message}")
         }
     }

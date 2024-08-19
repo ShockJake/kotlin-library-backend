@@ -8,6 +8,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
 import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.TestInstance
 import org.mockito.kotlin.mock
 import university.com.data.model.Book
 import university.com.data.service.DataSupplier.getBooksAsObjects
@@ -16,7 +17,6 @@ import university.com.data.service.DataSupplier.getCategories
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BookServiceTest {
@@ -161,9 +161,26 @@ class BookServiceTest {
     }
 
     @Test
+    fun shouldThrowExceptionIfNoTitleFound(): Unit = runBlocking {
+        // given
+        val responseBody = """{ "docs": [ {"title": []} ] }"""
+        val bookService = BookService(getHttpClientMock(responseBody, HttpStatusCode.OK), objectMapper)
+
+        // when & then
+        assertFailsWith<Exception> {
+            bookService.fetchBooksDataAsObjects(testCategory)
+        }
+        assertFailsWith<Exception> {
+            bookService.fetchBooksDataAsText(testCategory)
+        }
+    }
+
+    @Test
     fun shouldFetchBooksDataIfNoAmazonIdSupplied(): Unit = runBlocking {
         // given
-        val responseBody = this.javaClass.classLoader.getResource("book.json")?.readText()!!.replace("id#1", "")
+        val responseBody = this.javaClass.classLoader.getResource("book.json")
+            ?.readText()!!
+            .replace(""""id#1"""", "")
         val bookService = BookService(getHttpClientMock(responseBody, HttpStatusCode.OK), objectMapper)
         val expectedBook = Book("Title 1", "Author 1", "2024", "")
 

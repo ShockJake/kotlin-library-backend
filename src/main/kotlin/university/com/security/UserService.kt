@@ -11,7 +11,7 @@ class UserService(private val cartService: CartService) {
     private val users = mutableMapOf<String, User>()
 
     fun registerUser(username: String, password: String): User {
-        if (users.values.find { it.username == username } != null) {
+        if (users.values.any { it.username == username }) {
             error("User already exists")
         }
         val passwordHash = hashPassword(password)

@@ -1,4 +1,4 @@
-package university.com.apiTests
+package university.com.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.HttpClient

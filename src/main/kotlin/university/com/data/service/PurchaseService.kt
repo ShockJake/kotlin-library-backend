@@ -15,8 +15,9 @@ class PurchaseService {
 
     fun addPurchase(userId: String, books: List<Book>) {
         val purchaseId = generateId()
-        if (purchases.containsKey(userId)) {
-            purchases[userId]?.add(Purchase(purchaseId, books))
+        val purchase = purchases[userId]
+        if (purchase != null) {
+            purchase.add(Purchase(purchaseId, books))
         } else {
             purchases[userId] = mutableListOf(Purchase(purchaseId, books))
         }

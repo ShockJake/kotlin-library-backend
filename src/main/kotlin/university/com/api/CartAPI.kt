@@ -39,8 +39,8 @@ fun Route.cartApi() {
 
                     val requestData = call.receive<String>()
                     val parsedData = mapper.readTree(requestData)
-                    val action = parsedData.get("action").asText()
-                    val book = mapper.readValue(parsedData.get("book").toString(), Book::class.java)
+                    val action = parsedData["action"].asText()
+                    val book = mapper.readValue(parsedData["book"].toString(), Book::class.java)
                     handleBookAction(action, book, user.id)
                     call.respond(HttpStatusCode.OK)
                 } catch (e: Exception) {

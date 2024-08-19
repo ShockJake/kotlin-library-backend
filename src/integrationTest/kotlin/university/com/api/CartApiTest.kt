@@ -1,4 +1,4 @@
-package university.com.apiTests
+package university.com.api
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -15,8 +15,8 @@ import io.ktor.server.testing.testApplication
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
-import university.com.apiTests.ApiTestCommons.authenticateUser
-import university.com.apiTests.ApiTestCommons.setMockEngine
+import university.com.api.ApiTestCommons.authenticateUser
+import university.com.api.ApiTestCommons.setMockEngine
 import university.com.data.model.Book
 import university.com.plugins.configureRouting
 import university.com.plugins.configureSecurity

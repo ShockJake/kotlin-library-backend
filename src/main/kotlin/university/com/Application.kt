@@ -4,33 +4,56 @@ import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.stop
 import io.ktor.server.netty.Netty
+import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.util.logging.KtorSimpleLogger
+import university.com.discordIntegration.LibraryDiscordClient
 import university.com.plugins.configureHTTP
 import university.com.plugins.configureRouting
 import university.com.plugins.configureSecurity
 import university.com.plugins.configureSerialization
 import java.util.concurrent.TimeUnit
 
-fun main() {
-    val logger = KtorSimpleLogger("com.university.ApplicationKt")
-    logger.info("Starting the Application")
-//    val client = LibraryDiscordClient()
-//    client.start()
+val logger = KtorSimpleLogger("com.university.ApplicationKt")
 
-    val server = embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+fun main() {
+    val shouldStartDiscordClient = getDiscordIntegrationEnabledProperty()
+    val server = setupServer()
+    val discordClient = setupDiscordClient(shouldStartDiscordClient)
+
+    logger.info("Starting the Application")
     server.start(wait = false)
 
     Runtime.getRuntime()
         .addShutdownHook(
             Thread {
                 logger.info("Shutting down start")
-//                client.logout()
+                if (shouldStartDiscordClient) {
+                    discordClient!!.logout()
+                }
                 logger.info("Stopping server")
                 server.stop(10, 10, TimeUnit.SECONDS)
                 logger.info("Shutting down end...")
             }
         )
+
     Thread.currentThread().join()
+}
+
+fun setupServer(): NettyApplicationEngine {
+    return embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+}
+
+fun setupDiscordClient(shouldRun: Boolean): LibraryDiscordClient? {
+    var discordClient: LibraryDiscordClient? = null
+    if (shouldRun) {
+        discordClient = LibraryDiscordClient()
+        discordClient.start()
+    }
+    return discordClient
+}
+
+fun getDiscordIntegrationEnabledProperty(): Boolean {
+    return System.getProperty("discord.integration.enabled", "false").toBoolean()
 }
 
 fun Application.module() {
