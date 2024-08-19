@@ -8,7 +8,7 @@ object DiscordClientProvider {
     private var useMock = false
     private var mockDiscordClient: DiscordClient? = null
 
-    fun setMockDiscordClient(mockDiscordClient: DiscordClient) {
+    fun setMockDiscordClient(mockDiscordClient: DiscordClient?) {
         DiscordClientProvider.mockDiscordClient = mockDiscordClient
     }
 
