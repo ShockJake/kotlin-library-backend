@@ -30,18 +30,17 @@ fun setup() {
     logger.info("Starting the Application")
     server.start(wait = false)
 
-    Runtime.getRuntime()
-        .addShutdownHook(
-            Thread {
-                logger.info("Shutting down start")
-                if (shouldStartDiscordClient && discordClient != null) {
-                    discordClient.logout()
-                }
-                logger.info("Stopping server")
-                server.stop(10, 10, TimeUnit.SECONDS)
-                logger.info("Shutting down end...")
-            }
-        )
+    Runtime.getRuntime().addShutdownHook(Thread { shutdown(discordClient, server) })
+}
+
+fun shutdown(discordClient: LibraryDiscordClient?, server: NettyApplicationEngine) {
+    logger.info("Shutting down start")
+    if (getDiscordIntegrationEnabledProperty() && discordClient != null) {
+        discordClient.logout()
+    }
+    logger.info("Stopping server")
+    server.stop(10, 10, TimeUnit.SECONDS)
+    logger.info("Shutting down end...")
 }
 
 fun setupServer(): NettyApplicationEngine {

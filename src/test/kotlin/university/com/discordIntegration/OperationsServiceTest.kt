@@ -25,11 +25,12 @@ class OperationsServiceTest {
     private val operations = OperationsProvider().operations
     private val guilds = listOf(1L)
     private val applicationId = 1L
-    private val gateway: GatewayDiscordClient = mock()
+    private var gateway: GatewayDiscordClient = mock()
     private lateinit var operationsService: OperationsService
 
     @BeforeTest
     fun setUp() {
+        gateway = mock()
         operationsService = OperationsService()
     }
 
