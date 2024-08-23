@@ -33,18 +33,15 @@ fun setup() {
     Runtime.getRuntime().addShutdownHook(Thread { shutdown(discordClient, server) })
 }
 
-fun shutdown(discordClient: LibraryDiscordClient?, server: NettyApplicationEngine) {
-    logger.info("Shutting down start")
-    if (getDiscordIntegrationEnabledProperty() && discordClient != null) {
-        discordClient.logout()
-    }
-    logger.info("Stopping server")
-    server.stop(10, 10, TimeUnit.SECONDS)
-    logger.info("Shutting down end...")
+fun getDiscordIntegrationEnabledProperty(): Boolean {
+    return System.getProperty("discord.integration.enabled", "false").toBoolean()
 }
 
 fun setupServer(): NettyApplicationEngine {
-    return embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    val host = "0.0.0.0"
+    val port = 8080
+    logger.debug("Configuring HTTP server: $host:$port")
+    return embeddedServer(Netty, port = port, host = host, module = Application::module)
 }
 
 fun setupDiscordClient(shouldRun: Boolean): LibraryDiscordClient? {
@@ -57,8 +54,14 @@ fun setupDiscordClient(shouldRun: Boolean): LibraryDiscordClient? {
     return discordClient
 }
 
-fun getDiscordIntegrationEnabledProperty(): Boolean {
-    return System.getProperty("discord.integration.enabled", "false").toBoolean()
+fun shutdown(discordClient: LibraryDiscordClient?, server: NettyApplicationEngine) {
+    logger.info("Shutting down start")
+    if (getDiscordIntegrationEnabledProperty() && discordClient != null) {
+        discordClient.logout()
+    }
+    logger.info("Stopping server")
+    server.stop(10, 10, TimeUnit.SECONDS)
+    logger.info("Shutting down end...")
 }
 
 fun Application.module() {

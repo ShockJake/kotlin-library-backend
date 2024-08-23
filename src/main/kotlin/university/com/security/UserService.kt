@@ -1,16 +1,18 @@
 package university.com.security
 
 import at.favre.lib.crypto.bcrypt.BCrypt
+import io.ktor.util.logging.KtorSimpleLogger
 import university.com.data.service.CartService
 import java.util.UUID
 
 data class User(val id: String, val username: String, val passwordHash: String)
 
 class UserService(private val cartService: CartService) {
-
+    private val logger = KtorSimpleLogger(UserService::class.java.simpleName)
     private val users = mutableMapOf<String, User>()
 
     fun registerUser(username: String, password: String): User {
+        logger.info("Registering user $username")
         if (users.values.any { it.username == username }) {
             error("User already exists")
         }
@@ -23,6 +25,7 @@ class UserService(private val cartService: CartService) {
     }
 
     fun authenticateUser(username: String, password: String): Boolean {
+        logger.debug("Authenticating user $username")
         val user = users.values.find { it.username == username }
         if (user == null) {
             return false
@@ -31,6 +34,7 @@ class UserService(private val cartService: CartService) {
     }
 
     fun findUserByUsername(username: String): User {
+        logger.debug("Searching for user $username")
         val user = users.values.find { it.username == username }
         if (user == null) {
             error("User not found")
@@ -39,6 +43,7 @@ class UserService(private val cartService: CartService) {
     }
 
     fun deleteUser(userId: String) {
+        logger.info("Deleting user $userId")
         if (users.remove(userId) == null) {
             error("User not found")
         }

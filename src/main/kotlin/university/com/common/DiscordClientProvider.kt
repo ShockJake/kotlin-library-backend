@@ -1,7 +1,6 @@
 package university.com.common
 
 import discord4j.core.DiscordClient
-import university.com.discordIntegration.TokenProvider
 
 object DiscordClientProvider {
 
@@ -22,6 +21,6 @@ object DiscordClientProvider {
                 return mockDiscordClient as DiscordClient
             }
         }
-        return DiscordClient.builder(TokenProvider().getDiscordToken()).build()
+        return DiscordClient.builder(TokenProvider.getDiscordToken()).build()
     }
 }

@@ -21,7 +21,7 @@ object HttpClientProvider {
     fun getClient(): HttpClient {
         if (useMock || mockEngine != null) {
             mockEngine?.let {
-                return HttpClient(mockEngine!!) { install(HttpTimeout) { requestTimeoutMillis = 30000 } }
+                return HttpClient(mockEngine!!)
             }
         }
         return HttpClient(CIO) { install(HttpTimeout) { requestTimeoutMillis = 30000 } }
