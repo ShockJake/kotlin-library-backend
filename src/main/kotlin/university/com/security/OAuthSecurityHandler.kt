@@ -1,7 +1,6 @@
 package university.com.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
@@ -15,22 +14,10 @@ import io.ktor.server.response.respondRedirect
 import io.ktor.util.date.GMTDate
 import io.ktor.util.date.plus
 import io.ktor.util.logging.KtorSimpleLogger
-import kotlinx.serialization.Serializable
 import university.com.common.HttpClientProvider.getClient
 import university.com.security.JwtConfig.generateToken
 import java.util.UUID.randomUUID
 import kotlin.time.Duration.Companion.hours
-
-@Serializable
-data class GoogleUserInfo(
-    val id: String,
-    val email: String,
-    val verified_email: Boolean,
-    val name: String,
-    val given_name: String,
-    val family_name: String,
-    val picture: String
-)
 
 class OAuthSecurityHandler(private val objectMapper: ObjectMapper, private val userService: UserService) {
     val googleSource = "google"
@@ -41,7 +28,7 @@ class OAuthSecurityHandler(private val objectMapper: ObjectMapper, private val u
 
     suspend fun handleOAuthAuthenticatedUser(
         call: ApplicationCall,
-        redirectUrls: MutableMap<String, String>,
+        redirectUrls: Map<String, String>,
         source: String
     ) {
         val principal = call.authentication.principal<OAuth2>()
@@ -82,7 +69,7 @@ class OAuthSecurityHandler(private val objectMapper: ObjectMapper, private val u
         if (HttpStatusCode.OK != response.status) {
             error("Cannot fetch user data")
         }
-        return objectMapper.readValue<GoogleUserInfo>(response.bodyAsText()).email
+        return objectMapper.readTree(response.bodyAsText())["email"].asText()
     }
 
     private suspend fun fetchGihHubUserEmail(accessToken: String): String {
