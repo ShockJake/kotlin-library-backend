@@ -111,7 +111,7 @@ class ApplicationTest {
         val restClient: RestClient = mock()
         val applicationService: ApplicationService = mock()
         val discordClient: DiscordClient = mock()
-        val gateway = setupDiscordClientMock(discordClient, restClient)
+        setupDiscordClientMock(discordClient, restClient)
         whenever(restClient.applicationService).thenReturn(applicationService)
         whenever(
             applicationService.createGuildApplicationCommand(

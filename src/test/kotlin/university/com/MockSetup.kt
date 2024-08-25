@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono
 
 object MockSetup {
 
-    fun setupDiscordClientMock(discordClient: DiscordClient, restClient: RestClient): GatewayDiscordClient {
+    fun setupDiscordClientMock(discordClient: DiscordClient, restClient: RestClient) {
         val guild: Guild = mock()
         whenever(guild.id).thenReturn(Snowflake.of(1))
 
@@ -26,6 +26,8 @@ object MockSetup {
         whenever(gateway.restClient).thenReturn(restClient)
 
         val inputEvent: ChatInputInteractionEvent = mock()
+        whenever(inputEvent.commandName).thenReturn("unknown_command")
+        whenever(inputEvent.reply("Cannot find operation: unknown_command")).thenReturn(mock())
         val readyEvent: ReadyEvent = mock()
         val user: User = mock()
         whenever(user.username).thenReturn("TEST")
@@ -34,7 +36,5 @@ object MockSetup {
         whenever(gateway.on(ReadyEvent::class.java)).thenReturn(Flux.just(readyEvent))
         whenever(discordClient.login()).thenReturn(Mono.fromCallable { gateway })
         whenever(gateway.logout()).thenReturn(Mono.empty())
-
-        return gateway
     }
 }

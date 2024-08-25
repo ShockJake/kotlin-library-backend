@@ -38,16 +38,7 @@ class OAuthSecurityHandlerTest {
     private lateinit var userService: UserService
     private lateinit var oAuthSecurityHandler: OAuthSecurityHandler
 
-    private val googleUser = GoogleUserInfo(
-        "test_id",
-        "y",
-        true,
-        "test_name",
-        "test_given_name",
-        "test_family_name",
-        "test_picture"
-    )
-    private val googleMockResponse = objectMapper.writeValueAsString(googleUser)
+    private val googleMockResponse = """{"email": "email@test.com"}"""
 
     @BeforeAll
     fun beforeAll() {
@@ -69,7 +60,7 @@ class OAuthSecurityHandlerTest {
     @Test
     fun shouldHandleGoogleOAuthAuthenticationSuccessfully() {
         // given
-        val userName = "${googleUser.email}.oauth2"
+        val userName = "email@test.com.oauth2"
         val source = "google"
         val state = "TEST"
         val redirectUrl = "http://test_url"
@@ -78,7 +69,7 @@ class OAuthSecurityHandlerTest {
         val headers: ResponseHeaders = mock()
         val cookies: ResponseCookies = mock()
         val pipeline: ApplicationSendPipeline = mock()
-        setupMocks(state, principal, cookies, call, userName, headers, pipeline)
+        setupMocks(principal, cookies, call, userName, headers, pipeline)
 
         // when
         runBlocking {
@@ -109,7 +100,7 @@ class OAuthSecurityHandlerTest {
         val headers: ResponseHeaders = mock()
         val cookies: ResponseCookies = mock()
         val pipeline: ApplicationSendPipeline = mock()
-        setupMocks(state, principal, cookies, call, userName, headers, pipeline)
+        setupMocks(principal, cookies, call, userName, headers, pipeline)
 
         // when
         runBlocking {
@@ -129,7 +120,6 @@ class OAuthSecurityHandlerTest {
     }
 
     private fun setupMocks(
-        state: String,
         principal: OAuth2,
         cookies: ResponseCookies,
         call: ApplicationCall,
@@ -143,7 +133,7 @@ class OAuthSecurityHandlerTest {
         val applicationResponse: ApplicationResponse = mock()
         whenever(attributes.getOrNull(AttributeKey<AuthenticationContext>("AuthContext"))).thenReturn(mock())
         whenever(attributes.getOrNull(AttributeKey<TypeInfo>("ResponseTypeAttributeKey"))).thenReturn(mock())
-        whenever(principal.state).thenReturn(state)
+        whenever(principal.state).thenReturn("TEST")
         whenever(principal.accessToken).thenReturn(accessToken)
         whenever(authentication.principal<OAuth2>()).thenReturn(principal)
         whenever(applicationResponse.cookies).thenReturn(cookies)
