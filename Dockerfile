@@ -1,5 +1,5 @@
 # Base image
-FROM ubuntu:latest AS base
+FROM ubuntu:24.10 AS base
 
 ARG DEBIAN_FRONTEND=noninteractive
 
