@@ -67,7 +67,7 @@ jobs:
         run: |
           gcloud container clusters get-credentials bookshop-gke --region europe-central2
           kubectl config set-context --current --user=bookshop-gke
-          kubectl set image deployment/YOUR_DEPLOYMENT_NAME YOUR_CONTAINER_NAME=$IMAGE_TAG
+          kubectl set image deployment/bookshop-backend bookshop-backend=$IMAGE_TAG
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
