@@ -1,5 +1,5 @@
 ---
-name: SonarCloud
+name: Build, Analyze and Deploy
 on:
   push:
     branches: [main]
@@ -65,7 +65,7 @@ jobs:
           kubectl set image deployment/YOUR_DEPLOYMENT_NAME YOUR_CONTAINER_NAME=$IMAGE_TAG
       - name: Send email notification
         if: always()
-        uses: dawidd6/action-send-mail@v4
+        uses: dawidd6/action-send-mail@v3
         with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
