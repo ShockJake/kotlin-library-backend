@@ -52,11 +52,12 @@ jobs:
         run: |
           IMAGE_TAG=${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
           docker push $IMAGE_TAG
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+      - name: GCP Authetnication
+        uses: google-github-actions/auth@v2
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
       - name: Deploy to GKE
         env:
           IMAGE_TAG: ${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
