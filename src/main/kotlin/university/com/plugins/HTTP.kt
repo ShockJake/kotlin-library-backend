@@ -10,6 +10,7 @@ fun Application.configureHTTP() {
     install(CORS) {
         allowHost("localhost:3000")
         allowHost("127.0.0.1:3000")
+        allowHost("34.116.232.199")
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)

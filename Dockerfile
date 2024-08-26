@@ -36,4 +36,3 @@ EXPOSE 8080
 RUN mkdir -p "/tmp/app"
 COPY --from=build /tmp/app/build/libs/kotlin-library.jar /tmp/app/kotlin-library.jar
 CMD ${JAVA_HOME}/bin/java -jar /tmp/app/kotlin-library.jar >> library_backend.log
-

@@ -2,9 +2,9 @@
 name: SonarCloud
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    types: [ opened, synchronize, reopened ]
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     name: Build and analyze
@@ -39,3 +39,48 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: gradle test buildFatJar sonar --info
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Build Docker image
+        run: |
+          IMAGE_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/bookshop-backend:${{ github.sha }}
+          docker build -t $IMAGE_TAG .
+      - name: Push Docker image to Docker Hub
+        run: |
+          IMAGE_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/bookshop-backend:${{ github.sha }}
+          docker push $IMAGE_TAG
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+      - name: Deploy to GKE
+        env:
+          IMAGE_TAG: ${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
+        run: |
+          gcloud container clusters get-credentials bookshop-gke --region YOUR_CLUSTER_REGION
+          kubectl set image deployment/YOUR_DEPLOYMENT_NAME YOUR_CONTAINER_NAME=$IMAGE_TAG
+      - name: Send email notification
+        if: always()
+        uses: dawidd6/action-send-main@v4
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+        subject: 'GitHub Actions Pipeline Result: ${{ github.run_number }}'
+        to: sidux77@gmail.com
+        from: library_backend_notifier@github.com
+        body: |-
+          The GitHub Actions pipeline has completed.
+          - Workflow: ${{ github.workflow }}
+          - Job: ${{ github.job }}
+          - Conclusion: ${{ job.status }}
+          - Run Number: ${{ github.run_number }}
+          - Repository: ${{ github.repository }}
+          - Commit: ${{ github.sha }}
+          - Branch: ${{ github.ref }}
+          Check the full logs at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
