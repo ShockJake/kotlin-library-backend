@@ -68,7 +68,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
         run: |
-          kubectl set image deployment/bookshop-backend *=$IMAGE_TAG
+          kubectl set image deployment/backend *=$IMAGE_TAG
       - name: Send email notification
         if: always()
         uses: dawidd6/action-send-mail@v3
