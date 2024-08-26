@@ -71,16 +71,16 @@ jobs:
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-        subject: 'GitHub Actions Pipeline Result: ${{ github.run_number }}'
-        to: sidux77@gmail.com
-        from: library_backend_notifier@github.com
-        body: |-
-          The GitHub Actions pipeline has completed.
-          - Workflow: ${{ github.workflow }}
-          - Job: ${{ github.job }}
-          - Conclusion: ${{ job.status }}
-          - Run Number: ${{ github.run_number }}
-          - Repository: ${{ github.repository }}
-          - Commit: ${{ github.sha }}
-          - Branch: ${{ github.ref }}
-          Check the full logs at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          subject: 'GitHub Actions Pipeline Result: ${{ github.run_number }}'
+          to: sidux77@gmail.com
+          from: library_backend_notifier@github.com
+          body: |-
+            The GitHub Actions pipeline has completed.
+            - Workflow: ${{ github.workflow }}
+            - Job: ${{ github.job }}
+            - Conclusion: ${{ job.status }}
+            - Run Number: ${{ github.run_number }}
+            - Repository: ${{ github.repository }}
+            - Commit: ${{ github.sha }}
+            - Branch: ${{ github.ref }}
+            Check the full logs at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
