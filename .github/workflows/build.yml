@@ -46,11 +46,11 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
       - name: Build Docker image
         run: |
-          IMAGE_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/bookshop-backend:${{ github.sha }}
+          IMAGE_TAG=${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
           docker build -t $IMAGE_TAG .
       - name: Push Docker image to Docker Hub
         run: |
-          IMAGE_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/bookshop-backend:${{ github.sha }}
+          IMAGE_TAG=${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
           docker push $IMAGE_TAG
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
