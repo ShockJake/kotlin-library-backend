@@ -62,7 +62,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ secrets.DOCKER_NAME }}/bookshop-backend:${{ github.sha }}
         run: |
-          gcloud container clusters get-credentials bookshop-gke --region YOUR_CLUSTER_REGION
+          gcloud container clusters get-credentials bookshop-gke --region europe-central2
           kubectl set image deployment/YOUR_DEPLOYMENT_NAME YOUR_CONTAINER_NAME=$IMAGE_TAG
       - name: Send email notification
         if: always()
