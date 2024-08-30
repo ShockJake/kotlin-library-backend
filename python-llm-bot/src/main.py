@@ -97,6 +97,28 @@ async def ask(request: Request, response: Response):
     return {"responseId": id}
 
 
+def getGreetings():
+    result = (
+        "1. Hi, how can I help you? "
+        + "2. Hi, is there anything I can do for you? "
+        + "3. Hi there! Looking for something specific, or would you like some recommendations? "
+        + "4. Good day! How can I make your library experience more enjoyable today? "
+        + "5. Greetings! Feel free to ask if you have any questions or need assistance with anything."
+    )
+    return result
+
+
+def getGoodbye():
+    result = (
+        "1. Thank you for visiting the library! Have a wonderful day! "
+        + "2. Take care, and happy reading! We hope to see you again soon. "
+        + "3. Goodbye! Don’t hesitate to come back if you need more assistance. "
+        + "4. Have a great day! Feel free to return anytime for more great books. "
+        + "5. See you next time! Enjoy your books and have a lovely day!"
+    )
+    return result
+
+
 if __name__ == "__main__":
     print("[INFO] Application start")
     print("[INFO] Configuring model")
@@ -109,8 +131,10 @@ if __name__ == "__main__":
                     "content": "You are a library assistant, "
                     + " for next prompts answer only on questions about books,"
                     + " otherwise inform a user that your knowledge "
-                    + "is limited only for topics about books."
-                    + "Do not use markdown syntax and try to minimize the responses.",
+                    + "is limited only for topics about books. "
+                    + "Do not use markdown syntax and try to minimize the responses. "
+                    + f"Use this phrases as a greetings: {getGreetings()} "
+                    + f"And this phrases as a way to say goodbye: {getGoodbye()}",
                 }
             ],
         )
